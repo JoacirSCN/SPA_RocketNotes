@@ -37,23 +37,39 @@ export const Brand = styled.div`
 
 export const Menu = styled.ul`
   grid-area: menu;
+  background-color: ${({theme}) => theme.COLORS.BACKGROUND_900};
 
-  
+  padding-top: 6.4rem;
+  text-align: center;
 
-  background-color: green;
+  > li {
+    margin-bottom: 2.4rem;
+  }
 `;
 
 export const Search = styled.div`
   grid-area: search;
-  background-color: violet;
+
+  padding: 6.4rem 6.4rem 0;
 `;
 
 export const Content = styled.div`
   grid-area: content;
-  background-color: blue;
+  padding: 0 6.4rem;
+  overflow-y: auto;
 `;
 
 export const NewNote = styled.button`
   grid-area: newnote;
-  background-color: yellow;
+
+  background-color: ${({theme}) => theme.COLORS.ORANGE};
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    margin-right: .8rem;
+  }
 `;
