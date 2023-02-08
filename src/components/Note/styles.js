@@ -4,6 +4,8 @@ export const Container = styled.button`
   width: 100%;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND_700};
 
+  margin-bottom: 1rem;
+
   border: none;
   border-radius: 1rem;
   padding: 1.6rem 2.2rem;

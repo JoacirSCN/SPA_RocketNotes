@@ -1,6 +1,11 @@
 // Pegando o elemento html estilizado
 import { Container, Links, Content } from "./styles";
 
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+import { api } from "../../services/api";
+
 import { Tag } from "../../components/Tag";
 import { Header } from "../../components/Header";
 import { Button } from "../../components/Button";
@@ -8,43 +13,68 @@ import { ButtonText } from "../../components/ButtonText";
 import { Section } from "../../components/Section";
 
 export function Details() {
+  const [data, setData] = useState(null);
+
+  const params = useParams();
+  const navigate = useNavigate();
+
+  function handleBack(){
+    navigate(-1)
+  }
+
+  async function handleRemove(){
+    const confirm = window.confirm("Deseja realmente remover a nota?");
+
+    if(confirm) {
+      await api.delete(`/notes/${params.id}`);
+      handleBack();
+    }
+  }
+
+  useEffect(() => {
+    async function fetchNote() {
+      const response = await api.get(`/notes/${params.id}`);
+      setData(response.data);
+    }
+
+    fetchNote();
+  }, []);
+
   return (
     <Container>
       <Header />
+      {data && (
+        <main>
+          <Content>
+            <ButtonText title="Excluir nota" onClick={handleRemove} />
 
-      <main>
-        <Content>
+            <h1>{data.title}</h1>
 
-          <ButtonText title="Excluir nota" />
+            <p>{data.description}</p>
 
-          <h1>
-            Introdução ao React
-          </h1>
+            {data.links && (
+              <Section title="Links úteis">
+                <Links>
+                  {data.links.map((link) => (
+                    <li key={String(link.id)}>
+                      <a href={link.url} target="_blank" >{link.url}</a>
+                    </li>
+                  ))}
+                </Links>
+              </Section>
+            )}
 
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, illo. Culpa nemo cumque perspiciatis, quibusdam facere dolorum amet eaque nesciunt error, quis provident porro recusandae, sit corrupti tempora distinctio earum! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Amet quos officia beatae eaque inventore voluptatibus quae maiores et aliquam architecto quas quis, optio ipsam voluptas impedit at voluptates odio odit.
-          </p>
-          
-          <Section title="Links úteis">
-            <Links>
-              <li>
-                <a href="#">https://rocketseat.com.br/</a>
-              </li>
-              <li>
-                <a href="#">https://rocketseat.com.br/</a>
-              </li>
-            </Links>
-          </Section>
-
-          <Section title="Marcadores">
-            <Tag title="express" />
-            <Tag title="node" />
-          </Section>
-
-          <Button title="Entrar" loading />
-
-        </Content>
-      </main>
+            {data.tags && (
+              <Section title="Marcadores">
+                {data.tags.map((tag) => (
+                  <Tag key={String(tag.id)} title={tag.name} />
+                ))}
+              </Section>
+            )}
+            <Button title="Voltar" onClick={handleBack} />
+          </Content>
+        </main>
+      )}
     </Container>
   );
 }
